@@ -7,9 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinSockProgramming_Client",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinSockProgramming_Server", "WinSockProgramming_Server\WinSockProgramming_Server.vcxproj", "{D7D55939-9676-41BF-9021-3640A089FE88}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "共通", "共通", "{447AB5C0-69F9-4B38-8934-929550CBE28E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C++によるソケットプログラミングの体験", "C++によるソケットプログラミングの体験", "{447AB5C0-69F9-4B38-8934-929550CBE28E}"
 	ProjectSection(SolutionItems) = preProject
-		参考.txt = 参考.txt
+		notion.txt = notion.txt
 	EndProjectSection
 EndProject
 Global
@@ -39,6 +39,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2C275A08-841E-4420-A0C7-C722C8F0A947} = {447AB5C0-69F9-4B38-8934-929550CBE28E}
+		{D7D55939-9676-41BF-9021-3640A089FE88} = {447AB5C0-69F9-4B38-8934-929550CBE28E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADD6FEC5-3F13-4E69-99E9-CF70CB87B044}
