@@ -26,16 +26,19 @@ public class TCP
     private PacketQueue receive_queue = new PacketQueue();  //受信バッファ
     private EventHandler event_handler;
 
+    //イベントハンドラの登録するメソッド
     public void RegisterEventHandler(EventHandler handler)
     {
         event_handler += handler;
     }
 
+    //イベントハンドラの解除するメソッド
     public void UnregisterEventHandler(EventHandler handler)
     {
         event_handler -= handler;
     }
 
+    //クライアントからの接続を受け付けるメソッド
     void AcceptClient()
     {
         if (listener != null && listener.Poll(0, SelectMode.SelectRead))
@@ -51,10 +54,13 @@ public class TCP
             }
         }
     }
+
+    //サーバーを開始するためのメソッド
     public bool StartServer(int port, int connection_num)
     {
         try
         {
+            //サーバー側のソケットを作成し、指定されたポート番号で待機
             listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             listener.Bind(new IPEndPoint(IPAddress.Any, port));
             listener.Listen(connection_num);
@@ -68,6 +74,7 @@ public class TCP
         return LaunchThread();
     }
 
+    //サーバーを停止するメソッド
     public void StopServer()
     {
         thread_loop = false;
@@ -87,8 +94,10 @@ public class TCP
         running_server = false;
     }
 
+    //通信相手と接続するメソッド
     public bool Connect(string address, int port)
     {
+        //リスナーが既に存在しているときは接続しない
         if(listener != null)
         {
             return false;
@@ -118,7 +127,8 @@ public class TCP
             connecting = false;
         }
 
-        if(event_handler != null)
+        //イベントハンドラが存在すれば接続イベントを発生させる
+        if (event_handler != null)
         {
             NetEventState state = new NetEventState();
             state.type = NetEventType.Connect;
@@ -129,10 +139,12 @@ public class TCP
         return connecting;
     }
 
+    //通信相手と切断するメソッド
     public void Disconnect()
     {
         connecting = false;
 
+        //ソケットを閉じる処理
         if (socket != null)
         {
             try
@@ -157,6 +169,7 @@ public class TCP
 
     }
 
+    //送信するデータを格納するためのメソッド
     public int Send(byte[] data, int size)
     {
         if(send_queue == null)
@@ -166,6 +179,7 @@ public class TCP
         return send_queue.Enqueue(data, size);
     }
 
+    //受信したデータを取り出すためのメソッド
     public int Receive(ref byte[] buffer, int size)
     {
         if(receive_queue == null)
@@ -175,6 +189,7 @@ public class TCP
         return receive_queue.Dequeue(ref buffer, size);
     }
 
+    //ループによって定期的に受信と送信を行うメソッド
     public void Dispatch()
     {
         while (thread_loop)
@@ -190,6 +205,7 @@ public class TCP
         }
     }
 
+    //ソケットからデータを送信するメソッド
     void DispatchSend()
     {
         try
@@ -211,6 +227,7 @@ public class TCP
         }
     }
 
+    //ソケットからデータを受信するメソッド
     void DispatchReceive()
     {
         while (socket.Poll(0, SelectMode.SelectRead))
@@ -228,6 +245,7 @@ public class TCP
         }
     }
 
+    //別スレッドでDispatch関数を実行するメソッド
     bool LaunchThread()
     {
         try
