@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+クライアントホスト型を想定
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -94,10 +98,10 @@ public class TCP
         running_server = false;
     }
 
-    //通信相手と接続するメソッド
+    //サーバーと接続するメソッド
     public bool Connect(string address, int port)
     {
-        //リスナーが既に存在しているときは接続しない
+        //リスナーが既に存在しているときは何もしない
         if(listener != null)
         {
             return false;
@@ -139,7 +143,7 @@ public class TCP
         return connecting;
     }
 
-    //通信相手と切断するメソッド
+    //サーバーと切断するメソッド
     public void Disconnect()
     {
         connecting = false;
@@ -205,14 +209,14 @@ public class TCP
         }
     }
 
-    //ソケットからデータを送信するメソッド
+    //送信キューを用いてソケットからデータを送信するメソッド
     void DispatchSend()
     {
         try
         {
             if (socket.Poll(0, SelectMode.SelectWrite))
             {
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[MTU];
                 int send_size = send_queue.Dequeue(ref buffer, buffer.Length);
                 while (send_size > 0)
                 {
@@ -227,7 +231,7 @@ public class TCP
         }
     }
 
-    //ソケットからデータを受信するメソッド
+    //ソケットから受信キューにデータを受信するメソッド
     void DispatchReceive()
     {
         while (socket.Poll(0, SelectMode.SelectRead))

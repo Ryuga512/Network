@@ -5,6 +5,7 @@ using System.Text;
 
 public class PacketQueue
 {
+    //パケットのデータ定義
     struct PacketInfo
     {
         public int offset;
@@ -22,6 +23,7 @@ public class PacketQueue
         offset_list = new List<PacketInfo>();
     }
 
+    //排他制御でパケットデータを引数のbyte[] dataに書き込む
     public int Enqueue(byte[] data, int size)
     {
         PacketInfo info = new PacketInfo();
@@ -42,6 +44,7 @@ public class PacketQueue
         return size;
     }
 
+    //排他制御で引数のref byte[] bufferの内容を読みだし、戻り値として返す
     public int Dequeue(ref byte[] buffer, int size)
     {
         if (offset_list.Count <= 0)
