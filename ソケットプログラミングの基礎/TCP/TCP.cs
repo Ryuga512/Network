@@ -21,7 +21,7 @@ public class TCP
     protected Thread thread = null;
     protected bool thread_loop = false;
 
-    private static int MTU = 1400;
+    private static int MTU = 1024;
     private bool running_server = false;
     private bool connecting = false;
     private Socket listener = null;

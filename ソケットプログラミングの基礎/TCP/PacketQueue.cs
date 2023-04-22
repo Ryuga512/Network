@@ -23,7 +23,7 @@ public class PacketQueue
         offset_list = new List<PacketInfo>();
     }
 
-    //排他制御でパケットデータを引数のbyte[] dataに書き込む
+    //排他制御でdataをstream_bufferに書き込む
     public int Enqueue(byte[] data, int size)
     {
         PacketInfo info = new PacketInfo();
@@ -37,7 +37,7 @@ public class PacketQueue
 
             stream_buffer.Position = offset;
             stream_buffer.Write(data, 0, size);
-            stream_buffer.Flush();
+            stream_buffer.Flush(); //冗長なのでいらない
             offset += size;
         }
 
