@@ -4,4 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="bin\Release\netstandard2.0\TCP.deps.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\netstandard2.0\TCP.dll" />
+    <None Include="bin\Release\netstandard2.0\TCP.pdb" />
+  </ItemGroup>
+
 </Project>
