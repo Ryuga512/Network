@@ -37,7 +37,7 @@ public class PacketQueue
 
             stream_buffer.Position = offset;
             stream_buffer.Write(data, 0, size);
-            stream_buffer.Flush(); //冗長なのでいらない
+            stream_buffer.Flush();
             offset += size;
         }
 
