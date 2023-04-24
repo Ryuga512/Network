@@ -42,22 +42,7 @@ public class TCP
         event_handler -= handler;
     }
 
-    //クライアントからの接続を受け付けるメソッド
-    void AcceptClient()
-    {
-        if (listener != null && listener.Poll(0, SelectMode.SelectRead))
-        {
-            socket = listener.Accept();
-            connecting = true;
-            if (event_handler != null)
-            {
-                NetEventState state = new NetEventState();
-                state.type = NetEventType.Connect;
-                state.result = NetEventResult.Success;
-                event_handler(state);
-            }
-        }
-    }
+
 
     //サーバーを開始するためのメソッド
     public bool StartServer(int port, int connection_num)
@@ -98,7 +83,7 @@ public class TCP
         running_server = false;
     }
 
-    //サーバーと接続するメソッド
+    //通信接続するメソッド
     public bool Connect(string address, int port)
     {
         //リスナーが既に存在しているときは何もしない
@@ -143,7 +128,7 @@ public class TCP
         return connecting;
     }
 
-    //サーバーと切断するメソッド
+    //通信切断するメソッド
     public void Disconnect()
     {
         connecting = false;
@@ -193,21 +178,23 @@ public class TCP
         return receive_queue.Dequeue(ref buffer, size);
     }
 
-    //ループによって定期的に受信と送信を行うメソッド
-    public void Dispatch()
+    //クライアントからの接続を受け付けるメソッド
+    void AcceptClient()
     {
-        while (thread_loop)
+        if (listener != null && listener.Poll(0, SelectMode.SelectRead))
         {
-            AcceptClient();
-
-            if (socket != null && connecting == true)
+            socket = listener.Accept();
+            connecting = true;
+            if (event_handler != null)
             {
-                DispatchSend();
-                DispatchReceive();
+                NetEventState state = new NetEventState();
+                state.type = NetEventType.Connect;
+                state.result = NetEventResult.Success;
+                event_handler(state);
             }
-            Thread.Sleep(5);
         }
     }
+
 
     //送信キューを用いてソケットからデータを送信するメソッド
     void DispatchSend()
@@ -238,7 +225,7 @@ public class TCP
         {
             byte[] buffer = new byte[MTU];
             int receive_size = socket.Receive(buffer, buffer.Length, SocketFlags.None);
-            if (receive_size > 0)
+            if (receive_size == 0)
             {
                 Disconnect();
             }
@@ -246,6 +233,22 @@ public class TCP
             {
                 receive_queue.Enqueue(buffer, receive_size);
             }
+        }
+    }
+
+    //ループによって定期的に受信と送信を行うメソッド
+    public void Dispatch()
+    {
+        while (thread_loop)
+        {
+            AcceptClient();
+
+            if (socket != null && connecting == true)
+            {
+                DispatchSend();
+                DispatchReceive();
+            }
+            Thread.Sleep(5);
         }
     }
 
@@ -265,5 +268,6 @@ public class TCP
 
         return true;
     }
+
 }
 
