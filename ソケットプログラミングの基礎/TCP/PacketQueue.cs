@@ -44,7 +44,7 @@ public class PacketQueue
         return size;
     }
 
-    //排他制御で引数のref byte[] bufferの内容を読みだし、戻り値として返す
+    //排他制御で引数のref byte[] bufferに内容を読みだす
     public int Dequeue(ref byte[] buffer, int size)
     {
         if (offset_list.Count <= 0)
@@ -57,7 +57,7 @@ public class PacketQueue
         {
             PacketInfo info = offset_list[0];
 
-            int data_size = Math.Min(size, info.size);
+            int data_size = Math.Min(size, info.size); //キューのサイズ以上のものは読みださないように制限
             stream_buffer.Position = info.offset;
             receive_size = stream_buffer.Read(buffer, 0, data_size);
 
@@ -76,6 +76,7 @@ public class PacketQueue
         }
     }
 
+    //バッファのクリア
     public void Clear()
     {
         byte[] buffer = stream_buffer.GetBuffer();
